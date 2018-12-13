@@ -1,0 +1,4 @@
+#!/bin/sh
+podman stop kea-server
+podman stop relay
+podman stop client

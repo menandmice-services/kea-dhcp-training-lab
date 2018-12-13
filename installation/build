@@ -1,0 +1,11 @@
+#!/bin/sh
+#podman rmi --force kea-base client relay bind
+podman build -t fedora-base  -f Dockerfile.fedora
+podman build -t kea-base  -f Dockerfile.kea
+#podman build -t kea-dev  -f Dockerfile.kea-compiled
+podman build -t client -f Dockerfile.client
+podman build -t relay -f Dockerfile.relay
+podman build -t bind -f Dockerfile.bind
+
+
+

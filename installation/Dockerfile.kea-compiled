@@ -1,0 +1,11 @@
+FROM fedora-base
+
+RUN dnf -y install cmake bison flex pcre-devel libev-devel protobuf-c-devel protobuf-c-compiler make rpm-build doxygen swig autoconf automake libtool gtest-devel openssl-devel git wget log4cplus-devel ccache boost-devel gcc-c++ && dnf clean all
+RUN wget -nd https://ftp.isc.org/isc/kea/1.5.0-beta2/kea-1.5.0-beta2.tar.gz && \
+    tar zxvf kea-*.tar.gz && \
+    rm kea-*.tar.gz && \
+    cd kea-* && \
+    ./configure && make -j4 && make install && make clean && cd .. && rm -rf kea-*
+
+CMD /usr/lib/systemd/systemd --system
+

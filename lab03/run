@@ -1,0 +1,33 @@
+#!/bin/sh
+function pid {
+  podman inspect --format '{{.State.Pid}}' $1
+}
+
+podman stop kea-server clientA clientB relay
+podman rm --force kea-server clientA clientB relay
+podman run --privileged --net=none -v /root/kea/conf:/etc/kea:Z --name kea-server -d kea-base
+podman run --privileged --net=none --name clientA  -d client
+podman run --privileged --net=none --name clientB  -d client
+podman run --privileged --net=none --name relay  -d relay
+
+ip link add client1-eth0 type veth peer name relay1-eth0
+ip link add client2-eth0 type veth peer name relay2-eth0
+ip link add relay3-eth0 type veth peer name server-eth0
+ip link set netns $(pid clientA) dev client1-eth0
+ip link set netns $(pid clientB) dev client2-eth0
+ip link set netns $(pid kea-server) dev server-eth0
+ip link set netns $(pid relay) dev relay1-eth0
+ip link set netns $(pid relay) dev relay2-eth0
+ip link set netns $(pid relay) dev relay3-eth0
+nsenter -t $(pid clientA)    -n ip link set client1-eth0 up
+nsenter -t $(pid clientB)    -n ip link set client2-eth0 up
+nsenter -t $(pid relay)      -n ip link set relay1-eth0 up
+nsenter -t $(pid relay)      -n ip link set relay2-eth0 up
+nsenter -t $(pid relay)      -n ip link set relay3-eth0 up
+nsenter -t $(pid kea-server) -n ip link set server-eth0 up
+nsenter -t $(pid relay)      -n ip addr add 192.0.2.1/24 dev relay1-eth0
+nsenter -t $(pid relay)      -n ip addr add 198.51.100.1/24 dev relay2-eth0
+nsenter -t $(pid relay)      -n ip addr add 100.64.0.2/24 dev relay3-eth0
+nsenter -t $(pid kea-server) -n ip addr add 100.64.0.1/24 dev server-eth0
+nsenter -t $(pid kea-server) -n ip route add default via 100.64.0.2
+nsenter -t $(pid relay)      -n sysctl -w net.ipv4.ip_forward=1

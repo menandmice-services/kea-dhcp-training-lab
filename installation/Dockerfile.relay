@@ -1,0 +1,6 @@
+FROM fedora-base
+
+RUN dnf -y install dhcp-relay quagga && dnf -y clean all
+
+CMD /usr/lib/systemd/systemd --system
+

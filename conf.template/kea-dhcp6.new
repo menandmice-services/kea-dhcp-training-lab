@@ -1,0 +1,139 @@
+{
+  "Dhcp6": {
+    "control-socket": {
+      "socket-name": "/var/lib/kea/kea-dhcp6.socket",
+      "socket-type": "unix"
+    },
+    "decline-probation-period": 86400,
+    "dhcp-ddns": {
+      "always-include-fqdn": false,
+      "enable-updates": false,
+      "generated-prefix": "myhost",
+      "max-queue-size": 1024,
+      "ncr-format": "JSON",
+      "ncr-protocol": "UDP",
+      "override-client-update": false,
+      "override-no-update": false,
+      "qualifying-suffix": "",
+      "replace-client-name": "never",
+      "sender-ip": "0.0.0.0",
+      "sender-port": 0,
+      "server-ip": "127.0.0.1",
+      "server-port": 53001
+    },
+    "dhcp4o6-port": 0,
+    "expired-leases-processing": {
+      "flush-reclaimed-timer-wait-time": 25,
+      "hold-reclaimed-time": 3600,
+      "max-reclaim-leases": 100,
+      "max-reclaim-time": 250,
+      "reclaim-timer-wait-time": 10,
+      "unwarned-reclaim-cycles": 5
+    },
+    "hooks-libraries": [],
+    "host-reservation-identifiers": [
+      "hw-address",
+      "duid"
+    ],
+    "interfaces-config": {
+      "interfaces": [
+        "server-eth0/2001:db8:100:0:74de:2cff:fe55:144"
+      ],
+      "re-detect": true
+    },
+    "lease-database": {
+      "name": "/var/lib/kea/dhcp6.leases",
+      "persist": true,
+      "type": "memfile"
+    },
+    "mac-sources": [
+      "any"
+    ],
+    "option-data": [],
+    "option-def": [],
+    "relay-supplied-options": [
+      "65"
+    ],
+    "server-id": {
+      "enterprise-id": 0,
+      "htype": 0,
+      "identifier": "",
+      "persist": true,
+      "time": 0,
+      "type": "LLT"
+    },
+    "shared-networks": [],
+    "subnet6": [
+      {
+        "id": 1,
+        "option-data": [],
+        "pd-pools": [
+          {
+            "delegated-len": 56,
+            "excluded-prefix": "fd00:100:10::",
+            "excluded-prefix-len": 64,
+            "option-data": [],
+            "prefix": "fd00:100:10::",
+            "prefix-len": 48
+          }
+        ],
+        "pools": [
+          {
+            "option-data": [],
+            "pool": "fd00:100::1-fd00:100::ffff"
+          }
+        ],
+        "preferred-lifetime": 3000,
+        "rapid-commit": true,
+        "rebind-timer": 2000,
+        "relay": {
+          "ip-address": "::"
+        },
+        "renew-timer": 1000,
+        "reservation-mode": "all",
+        "reservations": [],
+        "subnet": "fd00:100::/64",
+        "valid-lifetime": 4000
+      },
+      {
+        "id": 2,
+        "option-data": [],
+        "pd-pools": [],
+        "pools": [
+          {
+            "option-data": [],
+            "pool": "fd00:200::1-fd00:200::ffff"
+          }
+        ],
+        "preferred-lifetime": 3000,
+        "rapid-commit": false,
+        "rebind-timer": 2000,
+        "relay": {
+          "ip-address": "::"
+        },
+        "renew-timer": 1000,
+        "reservation-mode": "all",
+        "reservations": [],
+        "subnet": "fd00:200::/64",
+        "valid-lifetime": 4000
+      }
+    ]
+  },
+  "Logging": {
+    "loggers": [
+      {
+        "debuglevel": 0,
+        "name": "kea-dhcp6",
+        "output_options": [
+          {
+            "flush": true,
+            "maxsize": 10240000,
+            "maxver": 1,
+            "output": "/var/log/kea-dhcp6.log"
+          }
+        ],
+        "severity": "INFO"
+      }
+    ]
+  }
+}

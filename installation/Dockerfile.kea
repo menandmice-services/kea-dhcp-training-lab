@@ -1,0 +1,6 @@
+FROM fedora-base
+
+RUN dnf -y install kea postgresql postgresql-server && dnf -y clean all
+
+CMD /usr/lib/systemd/systemd --system
+
