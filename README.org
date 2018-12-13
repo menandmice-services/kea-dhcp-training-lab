@@ -1,7 +1,7 @@
 * Files to setup the training labs for KEA DHCP training
 
 This repository contains scripts to build the training lab environment
-on Linux using Linux container for the KEA DHCP Server training.
+on Linux using Linux container for the [[https://kea.isc.org][KEA DHCP Server]] training.
 
 The training lab scripts have been tested on the latest Fedora Linux
 version (Fedora 29+). They might also work with the latest Red Hat EL
