@@ -1,0 +1,21 @@
+---
+- name: Prepare Podman images
+  hosts: ipv6
+  become: true
+  tasks:
+  - name: Copy Podman images files to server
+    ansible.posix.synchronize:
+      src: "{{ item }}"
+      dest: /tmp
+      compress: yes
+    loop:
+      - images/ipv6-base.tar
+      - images/client.tar
+      - images/relay.tar
+  - name: Import Podman Images
+    containers.podman.podman_load:
+      input: "{{ item }}"
+    loop:
+      - /tmp/ipv6-base.tar
+      - /tmp/client.tar
+      - /tmp/relay.tar

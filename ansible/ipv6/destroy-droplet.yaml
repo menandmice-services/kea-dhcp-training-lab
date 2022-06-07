@@ -1,0 +1,12 @@
+- hosts: localhost
+  vars:
+    digital_ocean_token: <DO-Token>
+  tasks:
+  - name: destroy droplet
+    digital_ocean_droplet:
+      name: "{{ item }}"
+      oauth_token: "{{ digital_ocean_token }}"
+      unique_name: yes
+      state: absent
+    with_inventory_hostnames:
+      - ipv6

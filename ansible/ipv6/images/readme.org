@@ -1,0 +1,4 @@
+This directory takes the TAR files of the Docker/Podman container
+images used to create a lab containers. When creating multiple servers
+for the training lab, it is faster to pre-generate the container
+images than to generate the docker container on each server.

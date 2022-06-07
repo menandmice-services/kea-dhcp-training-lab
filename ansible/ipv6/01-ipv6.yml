@@ -1,0 +1,35 @@
+---
+- name: Install IPv6 webinar server
+  hosts: ipv6
+  become: true
+  tasks:
+  - name: Install tools
+    dnf: name="{{ item }}"
+    loop:
+      - tmux
+      - tcpdump
+      - emacs-nox
+      - nano
+      - vim
+      - cockpit
+      - firewalld
+      - podman
+      - bind-utils
+      - socat
+      - git
+  - name: Add User
+    # Password "ipv6-2022"
+    user: name="user" group="wheel" password="$6$rounds=656000$ipv6$K9zy3WUsMbJ7YyRhglgVy2Lcro2V02t2zu6AJOW86GCv5MELgcsOhAycijwY1//a7GkvYtP52xS9zqMBLICuI1"
+  - name: Enable and start cockpit
+    service: name="cockpit" enabled="yes" state="started"
+  - name: Enable and start Firewall
+    service: name="firewalld" enabled="yes" state="started"
+  - name: Enable SSH password authentication
+    lineinfile:
+        path: "/etc/ssh/sshd_config"
+        regexp: "^#PasswordAuthentication yes"
+        line: "PasswordAuthentication yes"
+    notify: kick_sshd
+  handlers:
+  - name: "kick_sshd"
+    service: name="sshd" state="restarted"

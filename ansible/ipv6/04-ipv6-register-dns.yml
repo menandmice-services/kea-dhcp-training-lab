@@ -1,0 +1,56 @@
+---
+- name: Register machine in DNS
+  hosts: ipv6
+  become: true
+  tasks:
+  - name: Copy DNS key files to server
+    template: src="{{ item }}" dest="/tmp" owner="root" group="root" mode="0440"
+    loop:
+      - dane.key
+      - nsupdate.script
+  - name: Firewalld - permit traffic in default zone for DNS
+    ansible.posix.firewalld:
+     service: dns
+     permanent: yes
+     state: enabled
+    notify: "kick_firewalld"
+  - name: Create DNS entries
+    command: nsupdate -k /tmp/dane.key /tmp/nsupdate.script
+  handlers:
+  - name: Restart Cockpit service
+    listen: kick_cockpit
+    service:
+        name: "cockpit"
+        state: restarted
+  - name: Restart Firewalld service
+    listen: kick_firewalld
+    service:
+        name: "firewalld"
+        state: restarted
+- name: Install ACME Cert
+  hosts: ipv6
+  become: true
+  tasks:
+    - name: stop Firewall
+      service: name="firewalld" enabled="yes" state="stopped"
+    - name: Clone ACME.SH
+      git: repo="https://github.com/Neilpang/acme.sh" dest="/root/acme.sh"
+    - name: Get Certificate
+      shell: "/root/acme.sh/acme.sh --issue  -d ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org  --standalone --server letsencrypt"
+      ignore_errors: yes
+      args:
+        creates: "/root/.acme.sh/ipv6{{ ansible_hostname[-3:] }}.defaultroutes.org/ipv6{{ ansible_hostname[-3:] }}.defaultroutes.org.cer"
+    - name: start Firewall
+      service: name="firewalld" enabled="yes" state="started"
+    - name: set Certificate for Cockpit
+      shell: "/usr/sbin/remotectl certificate /root/.acme.sh/ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org/ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org.cer /root/.acme.sh/ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org/ca.cer /root/.acme.sh/ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org/ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org.key"
+    - name: Adjust Cert permissions
+      shell: "chmod 640 /etc/cockpit/ws-certs.d/*.cert && chown root:cockpit-ws /etc/cockpit/ws-certs.d/*.cert"
+- name: cleanup
+  hosts: ipv6
+  become: true
+  tasks:
+    - name: Clean DANE Key
+      file: state="absent" path="/tmp/dane.key"
+    - name: Clean nsupdate script
+      file: state="absent" path="/tmp/nsupdate.script"

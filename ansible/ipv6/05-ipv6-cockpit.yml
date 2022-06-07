@@ -1,0 +1,29 @@
+---
+- name: Configure Cockpit service
+  hosts: ipv6
+  become: true
+  tasks:
+  - name: Firewalld - permit traffic in default zone for HTTPS
+    ansible.posix.firewalld:
+     service: https
+     permanent: yes
+     state: enabled
+  - name: Enable https Port for Cockpit in SELinux
+    shell: "/sbin/semanage port -m -t websm_port_t -p tcp 443"
+  - name: Create directory for Cockpit socket overlay
+    file:
+      path: /etc/systemd/system/cockpit.socket.d/
+      state: directory
+  - name: Copy Cockpit socket overlay
+    copy:
+      src=local.conf
+      dest=/etc/systemd/system/cockpit.socket.d/local.conf
+  - name: Restart Firewalld
+    service:
+      name="firewalld"
+      state="restarted"
+  - name: Restart Cockpit
+    service:
+      name="cockpit.socket"
+      state="restarted"
+      daemon_reload=yes

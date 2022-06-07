@@ -1,0 +1,9 @@
+ttl 60
+server ipv6gw.strotmann.de
+del ipv6{{ ansible_hostname[-3:] }}.defaultroutes.org
+del ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org
+send
+add ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org. a {{ ansible_eth0.ipv4.address }}
+add ipv6-{{ ansible_hostname[-3:] }}.defaultroutes.org. aaaa {{ ansible_eth0.ipv6[0].address }}
+send
+quit

@@ -1,0 +1,17 @@
+---
+- name: Prepare Lab Environment
+  hosts: ipv6
+  become: true
+  tasks:
+  - name: Copy Helper-Scripts files to server
+    ansible.posix.synchronize:
+      src: bin
+      dest: /root
+      compress: yes
+  - name: Copy Lab files to server
+    ansible.posix.synchronize:
+      src: lab
+      dest: /root
+      compress: yes
+  - name: Adjust Ownership
+    shell: "chown -R root: /root/bin /root/lab"

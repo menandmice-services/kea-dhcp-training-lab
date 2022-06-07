@@ -1,0 +1,21 @@
+# generate squence in emacs
+# (dotimes (i 10) (insert (format "ipv6-%03d\n" (1+ i))))
+# M-x eval-expression
+
+[ipv6]
+ipv6-001  ansible_host=
+ipv6-002  ansible_host=
+ipv6-003  ansible_host=
+ipv6-004  ansible_host=
+ipv6-005  ansible_host=
+ipv6-006  ansible_host=
+ipv6-007  ansible_host=
+ipv6-008  ansible_host=
+ipv6-009  ansible_host=
+ipv6-010  ansible_host=
+ipv6-011  ansible_host=
+ipv6-012  ansible_host=
+ipv6-013  ansible_host=
+
+[ipv6:vars]
+ansible_user=root
