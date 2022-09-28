@@ -1,6 +1,5 @@
 FROM fedora
 
-RUN dnf -y update && dnf -y install emacs-nox vim tmux nano mg procps-ng man iproute jq iputils tcpdump lsof iftop emacs-json-mode && dnf -y clean all
+RUN dnf -y update && dnf -y install systemd emacs-nox vim tmux nano mg procps-ng man iproute jq iputils tcpdump lsof iftop emacs-json-mode && dnf -y clean all
 
 CMD /usr/lib/systemd/systemd --system
-
