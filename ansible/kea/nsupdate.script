@@ -1,0 +1,8 @@
+ttl 60
+server ipv6gw.strotmann.de
+del kea{{ ansible_hostname[-3:] }}.dane.onl
+send
+add kea{{ ansible_hostname[-3:] }}.dane.onl. a {{ ansible_eth0.ipv4.address }}
+add kea{{ ansible_hostname[-3:] }}.dane.onl. aaaa {{ ansible_eth0.ipv6[0].address }}
+send
+quit

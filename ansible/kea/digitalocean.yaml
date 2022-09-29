@@ -1,0 +1,28 @@
+- hosts: localhost
+  vars:
+    digital_ocean_token: <your-token>
+    droplet_size: s-1vcpu-1gb
+    droplet_region: fra1
+    droplet_image: rockylinux-8-x64
+  tasks:
+  - name: create a new droplet assigning the key
+    digital_ocean_droplet:
+      name: "{{ item }}"
+      oauth_token: "{{ digital_ocean_token }}"
+      size: "{{ droplet_size }}"
+      region: "{{ droplet_region }}"
+      image: "{{ droplet_image }}"
+      wait_timeout: 600
+      unique_name: yes
+      ipv6: yes
+      ssh_keys: ["1639971", "19262532", ]
+      state: present
+    with_inventory_hostnames:
+      - kea
+    register: droplet_result
+  - name: save ip and hostname to file "digitalocean.hosts"
+    lineinfile:
+      path: digitalocean.hosts
+      regexp: '.*{{ item.data.name }}$'
+      line: "{{ item.data.name }} ansible_host={{ item.data.networks.v4.1.ip_address }}"
+    with_items: "{{ droplet_result.results }}"

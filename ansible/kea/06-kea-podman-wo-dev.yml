@@ -1,0 +1,23 @@
+---
+- name: Prepare Podman images
+  hosts: kea
+  become: true
+  tasks:
+  - name: Copy Podman images files to server
+    ansible.posix.synchronize:
+      src: "{{ item }}"
+      dest: /tmp
+      compress: yes
+    loop:
+      - images/client.tar
+      - images/relay.tar
+      - images/kea-base.tar
+      - images/bind.tar
+  - name: Import Client Image
+    shell: "podman rmi client; podman load < /tmp/client.tar"
+  - name: Import Relay Image
+    shell: "podman rmi relay; podman load < /tmp/relay.tar"
+  - name: Import Kea Base Image
+    shell: "podman rmi kea-base; podman load < /tmp/kea-base.tar"
+  - name: Import BIND9 Image
+    shell: "podman rmi bind; podman load < /tmp/bind.tar"

@@ -1,0 +1,2 @@
+#!/bin/sh
+podman exec -it ${1} /bin/bash

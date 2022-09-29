@@ -1,0 +1,13 @@
+---
+- name: Prepare Podman images
+  hosts: kea
+  become: true
+  tasks:
+  - name: Import Podman Images
+    containers.podman.podman_load:
+      input: "{{ item }}"
+    loop:
+      - /tmp/client.tar
+      - /tmp/relay.tar
+      - /tmp/kea-base.tar
+

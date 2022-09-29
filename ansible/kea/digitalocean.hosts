@@ -1,0 +1,16 @@
+# generate squence in emacs
+# (dotimes (i 10) (insert (format "kea%03d\n" (1+ i))))
+# M-x eval-expression
+
+[kea]
+kea001 ansible_host=192.0.2.10
+kea002 ansible_host=100.64.1.1
+kea003 ansible_host=
+kea004 ansible_host=
+kea005 ansible_host=
+kea006 ansible_host=
+kea007 ansible_host=
+kea008 ansible_host=
+
+[kea:vars]
+ansible_user=root

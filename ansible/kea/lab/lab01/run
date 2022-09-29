@@ -1,0 +1,16 @@
+#!/bin/sh
+function pid {
+  podman inspect --format '{{.State.Pid}}' $1
+}
+
+podman stop kea-server client
+podman rm --force kea-server client
+podman run --privileged --net=none -v /root/lab/conf:/etc/kea:Z --name kea-server -d kea-base
+podman run --privileged --net=none --name client  -d client
+
+ip link add client-eth0 type veth peer name server-eth0
+ip link set netns $(pid client) dev client-eth0
+ip link set netns $(pid kea-server) dev server-eth0
+nsenter -t $(pid client)     -n ip link set client-eth0 up
+nsenter -t $(pid kea-server) -n ip link set server-eth0 up
+nsenter -t $(pid kea-server) -n ip addr add 192.0.2.1/24 dev server-eth0

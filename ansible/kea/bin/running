@@ -1,0 +1,2 @@
+#!/bin/sh
+podman ps -a --format "{{.Names}}"

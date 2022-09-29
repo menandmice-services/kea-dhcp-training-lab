@@ -1,0 +1,35 @@
+---
+- name: Install Kea webinar server
+  hosts: kea
+  become: true
+  tasks:
+  - name: Install tools
+    dnf: name="{{ item }}"
+    loop:
+      - tmux
+      - tcpdump
+      - emacs-nox
+      - nano
+      - vim
+      - cockpit
+      - firewalld
+      - podman
+      - bind-utils
+      - socat
+      - git
+  - name: Add User
+    # Password "kea-dhcp"
+    user: name="user" group="wheel" password="$6$rounds=656000$sys4$zbwSUTO.hXoRiBrOGjlpiwF.KO6F22.QYzaAoN7teNwKBg32/90ZKzPDs5JFFwhX8dg0cp9ag9jhl5tlBxuZ9/"
+  - name: Enable and start cockpit
+    service: name="cockpit" enabled="yes" state="started"
+  - name: Enable and start Firewall
+    service: name="firewalld" enabled="yes" state="started"
+  - name: Enable SSH password authentication
+    lineinfile:
+        path: "/etc/ssh/sshd_config"
+        regexp: "^#PasswordAuthentication yes"
+        line: "PasswordAuthentication yes"
+    notify: kick_sshd
+  handlers:
+  - name: "kick_sshd"
+    service: name="sshd" state="restarted"

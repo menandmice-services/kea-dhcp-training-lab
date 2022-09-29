@@ -1,0 +1,3 @@
+#!/bin/bash
+podman rm -f kea-server clientA clientB relay bind9
+

@@ -1,0 +1,27 @@
+---
+- name: Prepare Lab Environment
+  hosts: kea
+  become: true
+  tasks:
+  - name: Copy Helper-Scripts files to server
+    ansible.posix.synchronize:
+      src: bin
+      dest: /root
+      compress: yes
+  - name: Copy Lab files to server
+    ansible.posix.synchronize:
+      src: lab
+      dest: /root
+      compress: yes
+  - name: Adjust Ownership
+    shell: "chown -R root: /root/bin /root/lab"
+  - name: Copy JSON-Mode files to server
+    ansible.posix.synchronize:
+      src: json/
+      dest: /usr/share/emacs/site-lisp/
+      compress: yes
+  - name: Copy Emacs init.el files to server
+    ansible.posix.synchronize:
+      src: init.el
+      dest: /root/.emacs.d/
+      compress: yes

@@ -1,0 +1,11 @@
+---
+- name: Create Swap file
+  hosts: kea
+  become: true
+  tasks:
+  - name: Create Swap file
+    shell: "dd if=/dev/zero of=/swapfile count=4096 bs=1M"
+    args:
+      creates: "/swapfile"
+  - name: Format as Swap and enable
+    shell: "chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile"
