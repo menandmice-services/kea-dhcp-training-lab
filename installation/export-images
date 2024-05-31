@@ -1,0 +1,9 @@
+#!/bin/sh
+podman save -o relay.tar localhost/relay  
+zstd --rm -v relay.tar 
+podman save -o bind.tar localhost/bind
+zstd --rm -v bind.tar 
+podman save -o client.tar localhost/client
+zstd --rm -v client.tar 
+podman save -o kea-base.tar localhost/kea-base
+zstd --rm -v kea-base.tar 
